@@ -1,3 +1,5 @@
+/* logica del negocio 
+  all functions that the controller needs: validations, database operations */
 'use strict'
 
 let cont = 1

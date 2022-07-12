@@ -1,3 +1,9 @@
+/* declare all response functions that routes will use
+  errors must be handled because services functions throw errors
+  and we need to send a response to the client saying what went wrong.
+  Here we also manage theparameter we pass to the services functions,
+  this is made by properly handling the req.body req.query req.params etc
+*/
 'use strict'
 
 const userService = require('../services/user')
@@ -57,7 +63,8 @@ function post (req, res) {
     return res.status(201).send(user)
   } catch (err) {
     console.log(err.message)
-    const regex = new RegExp('requerido', 'g')
+    const regex = new RegExp('requerido', 'g')  // we use regex to see what error we got
+    // in this case we know the error has the word "requerido" so we try to catch it
     if (regex.test(err.message)) {
       return res.status(400).send('Bad request')
     }

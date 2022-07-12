@@ -1,3 +1,5 @@
+/* declare all routes and call response functions */
+
 'use strict'
 
 const userController = require('../controllers/user')
