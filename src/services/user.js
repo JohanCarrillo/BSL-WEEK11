@@ -29,6 +29,7 @@ function getUsers (params) {
 }
 
 function getUserById (id) {
+  console.log('searching by id: ', id)
   const user = users.find(user => user.id === Number.parseInt(id, 10))
 
   if (!user) {

@@ -1,5 +1,7 @@
 'use strict'
 
+const Boom = require('@hapi/boom')
+
 const {verifyToken} = require('../utils/token')
 const authService = require('../services/Auth')
 
@@ -9,22 +11,20 @@ function validateToken(req, res, next) {
 	// exclude login request
 	if (req.url === '/auth/login') return next()
 
-	if (!authorization) return res.status(401).send('Unauthorized')
+	if (!authorization) return next(Boom.unauthorized('Token not sent'))
 
 	// standard case
-	if (!authorization.startsWith('Bearer')) {
-		return res.status(401).send('Unauthorized')
-	}
+	if (!authorization.startsWith('Bearer')) return next(Boom.unauthorized('Invalid token'))
 
 	const {1: token} = authorization.split(' ')
 
-	if (!token) return res.status(401).send('Unauthorized')
+	if (!token) return next(Boom.unauthorized('Invalid token'))
 
 	try {
 		const data = verifyToken(token)
 		const user = authService.getUserById(data.id)
 
-		if (!user) return res.status(401).send('Unauthorized')
+		if (!user) return next(Boom.unauthorized('Invalid user'))
 
 		req.user = user
 
@@ -32,7 +32,7 @@ function validateToken(req, res, next) {
 
 	} catch (err) {
 		console.log(err)
-		return res.status(401).send('Unauthorized')
+		return next(Boom.unauthorized('Invalid token'))
 	}
 
 }

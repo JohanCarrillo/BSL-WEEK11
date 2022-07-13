@@ -6,19 +6,22 @@
 */
 'use strict'
 
+const Boom = require('@hapi/boom')
+
 const userService = require('../services/user')
 
-function get (req, res) {
+function get (req, res, next) {
   try {
     // console.log('get user: ', req.user)
+    console.log('showing all users')
     return res.send(userService.getUsers(req.query))
   } catch (err) {
     console.log(err)
-    return res.status(500).send('Internal server error')
+    return next(Boom.notFound(err.message))
   }
 }
 
-function getUserById (req, res) {
+function getUserById (req, res, next) {
   try {
     console.log(req.params)
     return res.send(userService.getUserById(req.params.id))
@@ -26,12 +29,12 @@ function getUserById (req, res) {
     console.log(err)
     const regex = new RegExp('existe', 'g')
     if (regex.test(err.message)) {
-      return res.status(404).send('Not found')
+      return next(Boom.notFound(err.message))
     }
   }
 }
 
-function update (req, res) {
+function update (req, res, next) {
   try {
     console.log(req.params)
     return res.status(200).send(userService.update(req.params.id, req.body))
@@ -39,12 +42,12 @@ function update (req, res) {
     console.log(err)
     const regex = new RegExp('existe', 'g')
     if (regex.test(err.message)) {
-      return res.status(404).send('Not found')
+      return next(Boom.notFound(err.message))
     }
   }
 }
 
-function remove (req, res) {
+function remove (req, res, next) {
   try {
     console.log(req.params)
     return res.status(204).send(userService.remove(req.params.id))
@@ -52,22 +55,23 @@ function remove (req, res) {
     console.log(err)
     const regex = new RegExp('existe', 'g')
     if (regex.test(err.message)) {
-      return res.status(404).send('Not found')
+      return next(Boom.notFound(err.message))
     }
   }
 }
 
-function post (req, res) {
+function post (req, res, next) {
   try {
     const user = userService.createUser(req.body)
 
     return res.status(201).send(user)
   } catch (err) {
+    // return next(err)
     console.log(err.message)
     const regex = new RegExp('requerido', 'g')  // we use regex to see what error we got
     // in this case we know the error has the word "requerido" so we try to catch it
     if (regex.test(err.message)) {
-      return res.status(400).send('Bad request')
+      return next(Boom.badRequest(err.message))
     }
   }
 }

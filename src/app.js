@@ -2,6 +2,7 @@
 
 const express = require('express')
 const bodyParser = require('body-parser')
+const error = require('./middlewares/error')
 
 // routes
 const initUserRoutes = require('./routes/user')
@@ -16,6 +17,8 @@ function initApp () {
 
   initUserRoutes(app)
   initAuthRoutes(app)
+
+  app.use(error)
 
   return app
 }

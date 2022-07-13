@@ -3,7 +3,7 @@
 const { sign, verify } = require('jsonwebtoken');
 
 function createToken(data) {
-	return sign(data, process.env.TOKEN_SIGNATURE, {expiresIn: '1h'});
+	return sign(data, process.env.TOKEN_SIGNATURE, {expiresIn: '5h'});
 }
 
 function verifyToken (token) {
