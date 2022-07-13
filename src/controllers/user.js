@@ -10,6 +10,7 @@ const userService = require('../services/user')
 
 function get (req, res) {
   try {
+    // console.log('get user: ', req.user)
     return res.send(userService.getUsers(req.query))
   } catch (err) {
     console.log(err)
